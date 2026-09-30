@@ -2,7 +2,7 @@
   "version": 2,
   "functions": {
     "api/index.php": {
-      "runtime": "./vercel-php-0.9.0-patched.0.tgz",
+      "runtime": "vercel-php@0.9.0",
       "includeFiles": "{config,components,includes,pages,public}/**"
     }
   },
