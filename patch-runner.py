@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
-Post-build patch script for vercel-php on Vercel's Node 20/22/24 Rust runtime.
-Fixes:
-1. Handler resolution (awsLambdaHandler + launcher.js + launcherType)
-2. LAMBDA_TASK_ROOT fallback from '/' to '/var/task' so PHP binary is found
-3. Prepend LAMBDA_TASK_ROOT initialization to launcher.js
-4. Normalize event.body array format for POST requests
+Comprehensive post-build patch script for vercel-php on Vercel's Node 20/22/24 Rust runtime.
+1. Patches .vc-config.json (handler, launcherType, awsLambdaHandler)
+2. Recursively searches and patches helpers.js, builtin.js, and launcher.js across:
+   - .vercel/output (with followlinks=True)
+   - /home/runner (builder cache where FileFsRef targets reside)
+   - /tmp
+3. Injects LAMBDA_TASK_ROOT='/var/task' fallback so PHP binary is found (/var/task/php/php)
 """
 import os
 import json
@@ -13,82 +14,71 @@ import sys
 
 print("=== STARTING VERCEL PHP RUNTIME PATCH ===")
 
+# 1. Inspect and patch .vc-config.json
 functions_dir = ".vercel/output/functions"
-if not os.path.exists(functions_dir):
-    print(f"Warning: {functions_dir} does not exist.")
+if os.path.exists(functions_dir):
+    for root, dirs, files in os.walk(functions_dir, followlinks=True):
+        print(f"Scanning function dir: {root} -> Files: {files}")
+        for f in files:
+            if f == ".vc-config.json":
+                config_path = os.path.join(root, f)
+                try:
+                    with open(config_path, "r", encoding="utf-8") as fp:
+                        cfg = json.load(fp)
+                    print(f"Original config content: {cfg}")
+                    cfg["awsLambdaHandler"] = "launcher.launcher"
+                    cfg["handler"] = "launcher.js"
+                    cfg["launcherType"] = "Nodejs"
+                    with open(config_path, "w", encoding="utf-8") as fp:
+                        json.dump(cfg, fp, indent=2)
+                    print(f"[OK] Patched config: {config_path}")
+                except Exception as e:
+                    print(f"[ERROR] Failed to patch config {config_path}: {e}")
 
-patched_configs = 0
-patched_launchers = 0
-patched_helpers = 0
+# 2. Patch all JS files across .vercel, /home/runner, and /tmp
+search_paths = [".vercel", "/home/runner", "/tmp"]
+patched_files = 0
 
-for root, dirs, files in os.walk(".vercel/output"):
-    for f in files:
-        filepath = os.path.join(root, f)
+for base_path in search_paths:
+    if not os.path.exists(base_path):
+        continue
+    print(f"Searching for PHP runtime files in: {base_path}")
+    for root, dirs, files in os.walk(base_path, followlinks=True):
+        for f in files:
+            if f in ["helpers.js", "builtin.js", "launcher.js"] or f.endswith(".js"):
+                filepath = os.path.join(root, f)
+                try:
+                    # Resolve symlink if needed
+                    real_path = os.path.realpath(filepath)
+                    for target_file in set([filepath, real_path]):
+                        if not os.path.isfile(target_file):
+                            continue
+                        with open(target_file, "r", encoding="utf-8", errors="ignore") as fp:
+                            code = fp.read()
+                        
+                        modified = False
+                        
+                        # Replace LAMBDA_TASK_ROOT || '/' with '/var/task'
+                        if "process.env.LAMBDA_TASK_ROOT || '/'" in code:
+                            code = code.replace("process.env.LAMBDA_TASK_ROOT || '/'", "process.env.LAMBDA_TASK_ROOT || '/var/task'")
+                            modified = True
+                        if 'process.env.LAMBDA_TASK_ROOT || "/"' in code:
+                            code = code.replace('process.env.LAMBDA_TASK_ROOT || "/"', "process.env.LAMBDA_TASK_ROOT || '/var/task'")
+                            modified = True
+                            
+                        # If this is builtin.js or launcher.js, prepend the task root initialization
+                        if (f in ["builtin.js", "launcher.js"] or "Spawning: PHP Built-In Server" in code):
+                            prefix = "process.env.LAMBDA_TASK_ROOT = process.env.LAMBDA_TASK_ROOT || '/var/task';\n"
+                            if prefix not in code:
+                                code = prefix + code
+                                modified = True
+                        
+                        if modified:
+                            with open(target_file, "w", encoding="utf-8") as fp:
+                                fp.write(code)
+                            patched_files += 1
+                            print(f"[OK] Patched runtime file: {target_file}")
+                except Exception as e:
+                    pass
 
-        # 1. Patch .vc-config.json
-        if f == ".vc-config.json":
-            try:
-                with open(filepath, "r", encoding="utf-8") as fp:
-                    cfg = json.load(fp)
-                
-                cfg["awsLambdaHandler"] = "launcher.launcher"
-                cfg["handler"] = "launcher.js"
-                cfg["launcherType"] = "Nodejs"
-                
-                with open(filepath, "w", encoding="utf-8") as fp:
-                    json.dump(cfg, fp, indent=2)
-                patched_configs += 1
-                print(f"[OK] Patched config: {filepath}")
-            except Exception as e:
-                print(f"[ERROR] Failed to patch config {filepath}: {e}")
-
-        # 2. Patch launcher.js (builtin server launcher)
-        if f == "launcher.js":
-            try:
-                with open(filepath, "r", encoding="utf-8", errors="ignore") as fp:
-                    code = fp.read()
-                
-                # Prepend task root definition at the very top
-                prefix = "process.env.LAMBDA_TASK_ROOT = process.env.LAMBDA_TASK_ROOT || '/var/task';\n"
-                if prefix not in code:
-                    code = prefix + code
-                    with open(filepath, "w", encoding="utf-8") as fp:
-                        fp.write(code)
-                    patched_launchers += 1
-                    print(f"[OK] Prepend LAMBDA_TASK_ROOT to launcher: {filepath}")
-            except Exception as e:
-                print(f"[ERROR] Failed to patch launcher {filepath}: {e}")
-
-        # 3. Patch helpers.js
-        if f == "helpers.js":
-            try:
-                with open(filepath, "r", encoding="utf-8", errors="ignore") as fp:
-                    code = fp.read()
-                
-                new_code = code.replace("process.env.LAMBDA_TASK_ROOT || '/'", "process.env.LAMBDA_TASK_ROOT || '/var/task'")
-                new_code = new_code.replace('process.env.LAMBDA_TASK_ROOT || "/"', "process.env.LAMBDA_TASK_ROOT || '/var/task'")
-                
-                if new_code != code:
-                    with open(filepath, "w", encoding="utf-8") as fp:
-                        fp.write(new_code)
-                    patched_helpers += 1
-                    print(f"[OK] Patched helpers.js: {filepath}")
-            except Exception as e:
-                print(f"[ERROR] Failed to patch helpers {filepath}: {e}")
-
-        # 4. Check all other JS files in .vercel/output for any '/' task root fallbacks
-        elif f.endswith(".js"):
-            try:
-                with open(filepath, "r", encoding="utf-8", errors="ignore") as fp:
-                    code = fp.read()
-                
-                if "process.env.LAMBDA_TASK_ROOT || '/'" in code or 'process.env.LAMBDA_TASK_ROOT || "/"' in code:
-                    new_code = code.replace("process.env.LAMBDA_TASK_ROOT || '/'", "process.env.LAMBDA_TASK_ROOT || '/var/task'")
-                    new_code = new_code.replace('process.env.LAMBDA_TASK_ROOT || "/"', "process.env.LAMBDA_TASK_ROOT || '/var/task'")
-                    with open(filepath, "w", encoding="utf-8") as fp:
-                        fp.write(new_code)
-                    print(f"[OK] Patched fallback in other JS file: {filepath}")
-            except Exception as e:
-                pass
-
-print(f"=== SUMMARY: Patched {patched_configs} config(s), {patched_launchers} launcher(s), {patched_helpers} helper(s) ===")
+print(f"=== SUMMARY: Successfully patched {patched_files} runtime file(s) ===")
