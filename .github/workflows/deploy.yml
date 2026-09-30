@@ -56,11 +56,8 @@ jobs:
       - name: Build Project Artifacts
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Patch vercel-php launcher.launcher bug
-        # Vercel's Rust bootstrap (Aug 2026) changed how handler strings are resolved.
-        # vercel-php sets handler='launcher.launcher' (AWS-style module.export), but the
-        # new bootstrap treats it as an ESM file path. We patch .vc-config.json post-build.
-        run: bash post-build-patch.sh
+      - name: Patch vercel-php launcher.launcher bug and LAMBDA_TASK_ROOT
+        run: python3 patch-runner.py
 
       - name: Deploy Artifacts to Vercel Production
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
