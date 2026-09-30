@@ -1,0 +1,11 @@
+# Vercel & Deployment
+.vercel/
+*.log
+
+# OS & Editor Files
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Scratch & Build Cache
+scratch/

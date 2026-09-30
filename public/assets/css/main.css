@@ -1,0 +1,998 @@
+/* EarthGreenEnergy Bangladesh - Custom Layout, Keyframes & Animation Styling */
+
+/* Shared Font & Fluid Typography Core */
+:root {
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-sans);
+}
+
+.site-header .nav-link {
+  position: relative;
+  transition: color 280ms ease, background-color 280ms ease, transform 280ms ease;
+  will-change: color, background-color, transform;
+}
+
+.site-header .nav-link::after {
+  position: absolute;
+  right: 12px;
+  bottom: 3px;
+  left: 12px;
+  height: 2px;
+  border-radius: 9999px;
+  background-color: #006948;
+  content: "";
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 280ms ease;
+}
+
+.site-header .nav-link:hover,
+.site-header .nav-link[aria-current="page"] {
+  color: #006948 !important;
+  background-color: transparent !important;
+  transform: translateY(-1px);
+}
+
+.site-header .nav-link:hover::after,
+.site-header .nav-link[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+.site-header .mobile-nav-link {
+  transition: color 280ms ease, background-color 280ms ease, transform 280ms ease;
+}
+
+.site-header .mobile-nav-link:hover {
+  color: #006948 !important;
+  background-color: transparent !important;
+  transform: translateX(3px);
+}
+
+/* Shared homepage-style hero typography across every page */
+main h1 {
+  font-family: var(--font-sans) !important;
+  font-size: 1.875rem !important;
+  line-height: 2.75rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em;
+}
+
+main .font-label-sm {
+  font-family: var(--font-sans) !important;
+  font-size: 11px !important;
+  line-height: 16px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 640px) {
+  main h1 {
+    font-size: 2.25rem !important;
+  }
+}
+
+@media (min-width: 768px) {
+  main h1 {
+    font-size: 3rem !important;
+    line-height: 3.5rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  main h1 {
+    font-size: 3.5rem !important;
+    line-height: 4rem !important;
+  }
+}
+
+/* Zero CLS Media Aspect Ratio Containers */
+.aspect-banner {
+  aspect-ratio: 16 / 9;
+}
+
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+/* ----------------------------------------------------
+ * HERO MULTI-EFFECT 4-SLIDE SYSTEM (5s INTERVAL)
+ * ---------------------------------------------------- */
+.hero-slides-wrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-slide.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  z-index: 2;
+}
+
+/* --- Slide 1: Vertical 3-Slice Panel Fly-in --- */
+.hero-slice-container {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.hero-slice {
+  height: 100%;
+  flex: 1;
+  background-size: 300% 100%;
+  background-repeat: no-repeat;
+  will-change: transform, opacity;
+}
+
+.slice-v1 {
+  background-position: 0% center;
+  transform: translateX(-100%) scale(1.1);
+  opacity: 0;
+}
+
+.slice-v2 {
+  background-position: 50% center;
+  transform: translateY(100%) scale(1.1);
+  opacity: 0;
+}
+
+.slice-v3 {
+  background-position: 100% center;
+  transform: translateX(100%) scale(1.1);
+  opacity: 0;
+}
+
+.hero-slide-1.active .slice-v1 {
+  animation: flyInLeft 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero-slide-1.active .slice-v2 {
+  animation: flyInCenter 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+}
+
+.hero-slide-1.active .slice-v3 {
+  animation: flyInRight 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+}
+
+@keyframes flyInLeft {
+  to { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+@keyframes flyInCenter {
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes flyInRight {
+  to { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+/* --- Slide 2: Horizontal 3-Strip Split Effect --- */
+.hero-strip-container {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.hero-strip {
+  width: 100%;
+  flex: 1;
+  background-size: 100% 300%;
+  background-repeat: no-repeat;
+  will-change: transform, opacity;
+}
+
+.strip-h1 {
+  background-position: center 0%;
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.strip-h2 {
+  background-position: center 50%;
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.strip-h3 {
+  background-position: center 100%;
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.hero-slide-2.active .strip-h1 {
+  animation: stripInLeft 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero-slide-2.active .strip-h2 {
+  animation: stripInRight 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+}
+
+.hero-slide-2.active .strip-h3 {
+  animation: stripInLeft 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+}
+
+@keyframes stripInLeft {
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes stripInRight {
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* --- Slide 3: Center Iris Radial Scale & Blur Zoom --- */
+.hero-zoom-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.hero-zoom-bg {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.22);
+  opacity: 0;
+  filter: blur(6px);
+  will-change: transform, opacity, filter;
+}
+
+.hero-slide-3.active .hero-zoom-bg {
+  animation: zoomIrisIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes zoomIrisIn {
+  to {
+    transform: scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* --- Slide 4: 4-Grid Matrix Quadrant Tile Drop Effect --- */
+.hero-matrix-container {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-tile {
+  width: 100%;
+  height: 100%;
+  background-size: 200% 200%;
+  background-repeat: no-repeat;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.tile-tl {
+  background-position: 0% 0%;
+  transform: scale(0.85) translateY(-30px);
+}
+
+.tile-tr {
+  background-position: 100% 0%;
+  transform: scale(0.85) translateY(-30px);
+}
+
+.tile-bl {
+  background-position: 0% 100%;
+  transform: scale(0.85) translateY(30px);
+}
+
+.tile-br {
+  background-position: 100% 100%;
+  transform: scale(0.85) translateY(30px);
+}
+
+.hero-slide-4.active .tile-tl {
+  animation: matrixDrop 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0s forwards;
+}
+
+.hero-slide-4.active .tile-tr {
+  animation: matrixDrop 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.12s forwards;
+}
+
+.hero-slide-4.active .tile-bl {
+  animation: matrixDrop 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.24s forwards;
+}
+
+.hero-slide-4.active .tile-br {
+  animation: matrixDrop 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.36s forwards;
+}
+
+@keyframes matrixDrop {
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Maintain full opacity & position on outgoing slide elements during crossfade */
+.hero-slide-1:not(.active) .slice-v1,
+.hero-slide-1:not(.active) .slice-v2,
+.hero-slide-1:not(.active) .slice-v3 {
+  transform: translateX(0) translateY(0) scale(1);
+  opacity: 1;
+}
+
+.hero-slide-2:not(.active) .strip-h1,
+.hero-slide-2:not(.active) .strip-h2,
+.hero-slide-2:not(.active) .strip-h3 {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.hero-slide-3:not(.active) .hero-zoom-bg {
+  transform: scale(1);
+  filter: blur(0);
+  opacity: 1;
+}
+
+.hero-slide-4:not(.active) .tile-tl,
+.hero-slide-4:not(.active) .tile-tr,
+.hero-slide-4:not(.active) .tile-bl,
+.hero-slide-4:not(.active) .tile-br {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* --- Slide Indicator Dots --- */
+.hero-indicator-btn {
+  width: 24px;
+  height: 5px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.35);
+  border: none;
+  cursor: pointer;
+  transition: all 0.35s ease;
+}
+
+.hero-indicator-btn:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.hero-indicator-btn.active {
+  width: 44px;
+  background: #85f8c4;
+  box-shadow: 0 0 12px rgba(133, 248, 196, 0.7);
+}
+
+/* ----------------------------------------------------
+ * VERTICAL INFINITE MARQUEE SHOWCASE
+ * ---------------------------------------------------- */
+@keyframes verticalMarqueeUp {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes verticalMarqueeDown {
+  0% {
+    transform: translateY(-50%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.vertical-track-up {
+  animation: verticalMarqueeUp 18s linear infinite;
+  will-change: transform;
+}
+
+.vertical-track-down {
+  animation: verticalMarqueeDown 18s linear infinite;
+  will-change: transform;
+}
+
+.vertical-marquee-container:hover .vertical-track-up,
+.vertical-marquee-container:hover .vertical-track-down {
+  animation-play-state: paused;
+}
+
+/* ----------------------------------------------------
+ * HEADLINE TYPEWRITER CURSOR
+ * ---------------------------------------------------- */
+.typing-cursor::after {
+  content: '|';
+  display: inline-block;
+  color: currentColor;
+  margin-left: 2px;
+  animation: cursorBlink 0.7s infinite;
+}
+
+.typing-done::after {
+  content: '';
+  display: none !important;
+}
+
+@keyframes cursorBlink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ----------------------------------------------------
+ * TIER-1 EQUIPMENT PARTNERS MARQUEE
+ * ---------------------------------------------------- */
+.affiliated-section {
+  background: #EEF2F7;
+  padding: 56px 0;
+  overflow: hidden;
+}
+
+.affiliated-label {
+  width: max-content;
+  text-align: center;
+  margin: 0 auto 32px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: #adedd3;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #002117;
+}
+
+.logo-marquee {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+}
+
+.logo-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  gap: 28px;
+  will-change: transform;
+}
+
+.logo-track-left {
+  animation: logo-scroll 26s linear infinite;
+}
+
+.logo-track-right {
+  animation: logo-scroll-reverse 26s linear infinite;
+}
+
+.logo-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes logo-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes logo-scroll-reverse {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.logo-item {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 280px;
+  height: 140px;
+  padding: 24px 32px;
+  box-sizing: border-box;
+  background: #EEF2F7;
+  border: 1px solid #E3E8EF;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(13, 59, 84, 0.05);
+  opacity: 0.92;
+  transition: opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  animation: logo-item-float 8s ease-in-out infinite alternate;
+}
+
+.logo-item:nth-child(2n) {
+  animation-delay: 2s;
+}
+
+.logo-item:nth-child(3n) {
+  animation-delay: 4s;
+}
+
+.logo-item:hover {
+  opacity: 1;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 105, 72, 0.15);
+}
+
+.logo-item img {
+  height: 120px;
+  width: auto;
+  max-width: 100%;
+  display: block;
+  object-fit: contain;
+  animation: logo-pulse 6s ease-in-out infinite alternate;
+}
+
+@keyframes logo-item-float {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes logo-pulse {
+  from {
+    transform: scale(1);
+    opacity: 0.95;
+  }
+
+  to {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@media(max-width: 600px) {
+  .logo-marquee {
+    gap: 14px;
+  }
+
+  .logo-track {
+    gap: 16px;
+  }
+
+  .logo-item {
+    width: 200px;
+    height: 110px;
+    padding: 16px;
+  }
+
+  .logo-item img {
+    height: 65px;
+  }
+}
+
+/* ----------------------------------------------------
+ * SECTOR SOLUTIONS CONTINUOUS MARQUEE
+ * ---------------------------------------------------- */
+.solutions-marquee {
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 5%, #000 95%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 5%, #000 95%, transparent 100%);
+}
+
+.solutions-track {
+  display: flex;
+  align-items: stretch;
+  width: max-content;
+  gap: 24px;
+  animation: solutions-scroll 32s linear infinite;
+  will-change: transform;
+}
+
+.solutions-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes solutions-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ----------------------------------------------------
+ * 5-STEP ENGINEERING PROCESS CARDS
+ * ---------------------------------------------------- */
+.process-grid {
+  grid-auto-rows: minmax(275px, auto);
+}
+
+.process-card {
+  min-height: 275px;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(-30px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
+  will-change: opacity, transform;
+}
+
+/* ----------------------------------------------------
+ * HOMEPAGE SECTION ORDER
+ * ---------------------------------------------------- */
+.home-section-hero {
+  order: 1;
+}
+
+.home-section-why {
+  order: 2;
+}
+
+.home-section-stats {
+  order: 3;
+}
+
+.home-section-approach {
+  order: 4;
+}
+
+.home-section-what-we-do {
+  order: 5;
+  background-color: #FAF8FF;
+  /* <-- MANUALLY CHANGE THIS BACKGROUND COLOR HEX CODE HERE */
+}
+
+.home-section-solutions {
+  order: 6;
+}
+
+.home-section-portfolio {
+  order: 7;
+}
+
+.home-section-partners {
+  order: 8;
+}
+
+.home-section-testimonials {
+  order: 9;
+}
+
+.home-section-clarifications {
+  order: 10;
+}
+
+.home-section-knowledge {
+  order: 11;
+}
+
+.process-card.pop-down {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Distinct hover color shifts for the 5 cards */
+.process-card-1:hover {
+  background-color: #006948 !important;
+  color: #ffffff !important;
+}
+
+.process-card-2:hover {
+  background-color: #2b6954 !important;
+  color: #ffffff !important;
+}
+
+.process-card-3:hover {
+  background-color: #005137 !important;
+  color: #ffffff !important;
+}
+
+.process-card-4:hover {
+  background-color: #825100 !important;
+  color: #ffffff !important;
+}
+
+.process-card-5:hover {
+  background-color: #131b2e !important;
+  color: #ffffff !important;
+}
+
+.process-card:hover .process-text,
+.process-card:hover .process-subtext,
+.process-card:hover .process-num {
+  color: #ffffff !important;
+}
+
+/* Body Text Expander */
+.process-body-container {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.process-card:hover .process-body-container {
+  grid-template-rows: 1fr;
+}
+
+.process-body-content {
+  overflow: hidden;
+}
+
+/* ----------------------------------------------------
+ * 4 PILLAR CARDS HOVER COLOR SHIFT
+ * ---------------------------------------------------- */
+.pillar-card {
+  transition: background-color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease, color 0.35s ease;
+}
+
+.pillar-card:hover {
+  background-color: #006948 !important;
+  color: #ffffff !important;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 105, 72, 0.2);
+}
+
+.pillar-card:hover h3,
+.pillar-card:hover h4,
+.pillar-card:hover p,
+.pillar-card:hover span {
+  color: #ffffff !important;
+}
+
+.pillar-card:hover .pillar-icon-box {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #85f8c4 !important;
+}
+
+.pillar-card:hover .pillar-icon-box .material-symbols-outlined {
+  color: #85f8c4 !important;
+}
+
+/* ----------------------------------------------------
+ * TESTIMONIAL & FAQ CARDS STYLING
+ * ---------------------------------------------------- */
+.faq-card {
+  transition: background-color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.faq-card:hover {
+  background-color: #006948 !important;
+  color: #ffffff !important;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.faq-card:hover .faq-toggle,
+.faq-card:hover .faq-content {
+  color: #ffffff !important;
+}
+
+.faq-card:hover .faq-icon {
+  color: #85f8c4 !important;
+}
+
+.faq-content {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  border-top-color: transparent !important;
+  transition: max-height 0.45s ease, opacity 0.3s ease, padding 0.45s ease, border-color 0.3s ease;
+}
+
+.faq-content.is-open {
+  max-height: 300px;
+  opacity: 1;
+  padding-top: 1rem !important;
+  padding-bottom: 1.5rem !important;
+  border-top-color: rgba(188, 202, 192, 0.3) !important;
+}
+
+.testimonial-card {
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 28px rgba(0, 105, 72, 0.25);
+}
+
+/* ----------------------------------------------------
+ * WHAT WE DO SECTION POPUP MOTION EFFECT
+ * ---------------------------------------------------- */
+.what-we-do-card {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    box-shadow 0.4s ease,
+    background-color 0.35s ease,
+    border-color 0.35s ease;
+  will-change: transform, box-shadow;
+}
+
+/* Subtle popup lift when mouse enters the section */
+.home-section-what-we-do:hover .what-we-do-card {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px -6px rgba(0, 105, 72, 0.18);
+}
+
+/* Enhanced spring popup motion when directly hovering over a card */
+.home-section-what-we-do .what-we-do-card:hover {
+  transform: translateY(-10px) scale(1.035) !important;
+  box-shadow: 0 22px 40px -8px rgba(0, 105, 72, 0.35) !important;
+  border-color: #006948 !important;
+}
+
+/* ----------------------------------------------------
+ * HARDWARE ACCELERATED MOBILE DRAWER
+ * ---------------------------------------------------- */
+#mobile-menu {
+  will-change: transform, opacity;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Material Symbols Fill State */
+.fill-1 {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* ----------------------------------------------------
+ * FLOATING WHATSAPP BUTTON BLINK ANIMATION
+ * ---------------------------------------------------- */
+@keyframes whatsappBlink {
+
+  0%,
+  100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 10px rgba(37, 211, 102, 0.8));
+  }
+
+  50% {
+    opacity: 0.75;
+    filter: drop-shadow(0 0 25px rgba(37, 211, 102, 1));
+  }
+}
+
+.whatsapp-float-btn {
+  transition: transform 300ms ease, opacity 300ms ease, filter 300ms ease;
+}
+
+.whatsapp-float-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  animation: whatsappBlink 1.5s ease-in-out infinite;
+}
+
+@keyframes whatsappPingRing {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+
+  70%,
+  100% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+}
+
+.whatsapp-ping-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background-color: #25d366;
+  animation: whatsappPingRing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* ====================================================
+ * MULTI-PAGE BACKGROUND PATTERN & SHAPE SYSTEM UTILITIES
+ * ==================================================== */
+
+/* 1. Global Footer Uniform Background (#0D233A) */
+footer {
+  background-color: #0D233A !important;
+  color: #F4F6F4;
+}
+
+/* 2. Homepage High-Impact Pattern System Utilities */
+.bg-horizon {
+  background: linear-gradient(135deg, #0d233a 0%, #004d33 50%, #0d233a 100%) !important;
+}
+
+.bg-solar-grid {
+  background-image: 
+    linear-gradient(to right, rgba(0, 168, 107, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 168, 107, 0.08) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+.bg-corner-rays {
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-corner-rays::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 168, 107, 0.14) 0%, rgba(13, 35, 58, 0) 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bg-corner-rays::after {
+  content: "";
+  position: absolute;
+  bottom: -140px;
+  left: -140px;
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 191, 0, 0.09) 0%, rgba(13, 35, 58, 0) 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 3. Inner Page Muted & Technical Utilities */
+.bg-eco-neutral {
+  background-color: #F4F6F4 !important;
+}
+
+.bg-solar-grid-faint {
+  background-image: 
+    linear-gradient(to right, rgba(0, 105, 72, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 105, 72, 0.045) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* 4. Contact & Forms Page Zero Distraction Split-Screen Backgrounds */
+.bg-contact-details {
+  background-color: #F5F2EB !important; /* Flat Warm Sand */
+}
+
+.bg-contact-form {
+  background-color: #FFFFFF !important; /* Flat Pure White */
+}
