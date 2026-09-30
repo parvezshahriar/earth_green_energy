@@ -1,16 +1,10 @@
 {
   "version": 2,
-  "name": "earth-green-energy",
-  "builds": [
-    {
-      "src": "api/index.php",
-      "use": "vercel-php@0.7.0"
-    },
-    {
-      "src": "public/assets/**",
-      "use": "@vercel/static"
+  "functions": {
+    "api/index.php": {
+      "runtime": "vercel-php@0.6.0"
     }
-  ],
+  },
   "routes": [
     {
       "src": "/assets/(.*)",
