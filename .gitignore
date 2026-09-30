@@ -9,3 +9,6 @@ Thumbs.db
 
 # Scratch & Build Cache
 scratch/
+
+.vercel
+.env*
