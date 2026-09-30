@@ -559,5 +559,5 @@
 </div>
 <!-- Interactive JavaScript Engine for Real-Time Recalculation -->
 
-<script src="assets/js/solar-calculator.js" onload="if(typeof window.initSolarCalculator==='function')window.initSolarCalculator();"></script>
+<script>if (typeof window.initSolarCalculator === 'function') window.initSolarCalculator();</script>
 </main>

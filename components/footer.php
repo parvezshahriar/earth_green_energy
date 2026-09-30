@@ -112,6 +112,7 @@
     </div>
   </div>
 </footer>
+<script src="assets/js/solar-calculator.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -398,6 +398,12 @@ function initSolarCalculator() {
         chk.classList.remove('text-outline-variant');
         chk.classList.add('text-white');
       }
+      state.model = this.getAttribute('data-model') || 'capex_direct';
+      recalculate();
+    });
+  });
+
+  // Run calculation initially on mount
   recalculate();
 }
 
